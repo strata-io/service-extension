@@ -18,3 +18,17 @@ type Provider interface {
 	// Set sets a value on the session for the provided key.
 	Set(req *http.Request, key string, value any)
 }
+
+// Session provides a session instance for an end-user. This interface is
+// typically only used for back-channel interactions that do not contain a
+// session cookie on the request.
+type Session interface {
+	// GetString returns a session value based on the provided key.
+	GetString(key string) string
+
+	// Get returns a session value based on the provided key.
+	Get(key string) any
+
+	// Set sets a value on the session for the provided key.
+	Set(key string, value any)
+}
