@@ -13,5 +13,6 @@ type Orchestrator interface {
 	SessionProvider() session.Provider
 	SecretProvider() (secret.Provider, error)
 	IdentityProvider(name string) (idfabric.IdentityProvider, error)
+	AttributeProvider(name string) (idfabric.AttributeProvider, error)
 	Router() router.Router
 }
