@@ -20,5 +20,5 @@ type AttributeProvider interface {
 	// returned. When a given AttributeProvider returns a multivalued attribute such
 	// as group memberships, the values are concatenated using a delimiter that is
 	// defined on the Identity Fabric component.
-	Query(sub string, attrs []string) (map[string]string, error)
+	Query(subject string, attributes []string) (map[string]string, error)
 }
