@@ -10,8 +10,10 @@ package log
 type Logger interface {
 	// Debug will log at debug level.
 	Debug(keyPairs ...any)
+
 	// Info will log at info level.
 	Info(keyPairs ...any)
+
 	// Error will log at error level.
 	Error(keyPairs ...any)
 }

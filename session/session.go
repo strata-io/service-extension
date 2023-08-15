@@ -3,7 +3,7 @@ package session
 import "net/http"
 
 // Provider enables a way to interact with the underlying session store. Methods
-// on the provider take a request in order to lookup the associated session.
+// on the provider take a request in order to look up the associated session.
 //
 // Example:
 //
