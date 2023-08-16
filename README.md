@@ -1,11 +1,16 @@
-# Service Extension Library
+# Service Extension Development Library
+Integrating identity systems requires extreme configurability. Service Extensions 
+give administrators the ability to customize the behavior of the Maverics Orchestrator
+to suit the particular needs of their integration. This library aids in the 
+development of Service Extensions.
 
 ## Local Setup
 To develop Service Extensions on your local machine, follow the instructions below. 
 The steps listed below are only to aid in local development and are not required to run
 the Maverics platform. 
 
-Download the latest version of Go. [Instructions](https://go.dev/doc/install) can be found on the Go website.
+Download the latest version of Go. [Instructions](https://go.dev/doc/install) can be 
+found on the Go website.
 
 After Go is downloaded, create a project directory. For organizational purpose, it is
 recommended to create this project alongside other Maverics configuration files. For
