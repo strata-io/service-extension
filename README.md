@@ -41,6 +41,7 @@ below demonstrates how the library can be imported.
 package main
 
 import (
+	"net/http"
 
 	"github.com/strata-io/service-extension/orchestrator"
 )
