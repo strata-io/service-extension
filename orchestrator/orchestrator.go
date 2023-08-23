@@ -29,4 +29,7 @@ type Orchestrator interface {
 
 	// Router gets a router.
 	Router() router.Router
+
+	// Metadata gets metadata.
+	Metadata() map[string]any
 }
