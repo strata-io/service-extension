@@ -30,6 +30,6 @@ type Orchestrator interface {
 	// Router gets a router.
 	Router() router.Router
 
-	// Metadata gets metadata.
+	// Metadata gets the metadata associated with the Service Extension in use.
 	Metadata() map[string]any
 }
