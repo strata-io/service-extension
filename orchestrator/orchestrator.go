@@ -6,6 +6,7 @@ import (
 	"github.com/strata-io/service-extension/router"
 	"github.com/strata-io/service-extension/secret"
 	"github.com/strata-io/service-extension/session"
+	"github.com/strata-io/service-extension/supportprovider"
 )
 
 type Orchestrator interface {
@@ -26,6 +27,10 @@ type Orchestrator interface {
 	// AttributeProvider gets an attribute provider by name. An error is returned if
 	// the attribute provider is not found.
 	AttributeProvider(name string) (idfabric.AttributeProvider, error)
+
+	// SupportProvider provides support to selected list of external services
+	// and protocols.
+	SupportProvider() supportprovider.SupportProvider
 
 	// Router gets a router.
 	Router() router.Router
