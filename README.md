@@ -21,7 +21,7 @@ used for tracking dependencies. You can replace `example.com` with the name of y
 company. Your directory structure look similar to the below.
 ```
 etc
-└── maveircs
+└── maverics
     ├── extensions
     │         ├── go.mod
     │         └── go.sum
