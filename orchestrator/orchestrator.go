@@ -1,6 +1,8 @@
 package orchestrator
 
 import (
+	"net/http"
+
 	"github.com/strata-io/service-extension/idfabric"
 	"github.com/strata-io/service-extension/log"
 	"github.com/strata-io/service-extension/router"
@@ -12,8 +14,9 @@ type Orchestrator interface {
 	// Logger gets a logger.
 	Logger() log.Logger
 
-	// SessionProvider gets a session provider.
-	SessionProvider() session.Provider
+	// Session returns the session associated with the request. An error is returned
+	// if retrieving the session fails.
+	Session(req *http.Request) (session.Session, error)
 
 	// SecretProvider gets a secret provider. An error is returned if a secret
 	// provider is not configured.
