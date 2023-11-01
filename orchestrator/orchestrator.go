@@ -12,8 +12,8 @@ type Orchestrator interface {
 	// Logger gets a logger.
 	Logger() log.Logger
 
-	// SessionProvider gets a session provider.
-	SessionProvider() session.Provider
+	// Session returns the session.
+	Session(opts ...session.SessionOpt) (session.Provider, error)
 
 	// SecretProvider gets a secret provider. An error is returned if a secret
 	// provider is not configured.

@@ -7,28 +7,41 @@ import "net/http"
 //
 // Example:
 //
-//	session.Set(req, "idp.authenticated", "true")
+//	sess, _ := api.Session()
+//	_ = sess.SetString("idp.authenticated", "true")
+//	_ = sess.Save()
 type Provider interface {
 	// GetString returns a session value based on the provided key.
-	GetString(req *http.Request, key string) string
+	GetString(key string) (string, error)
 
-	// Get returns a session value based on the provided key.
-	Get(req *http.Request, key string) any
+	// SetString adds a key and the corresponding string value to the session data.
+	SetString(key string, value string) error
 
-	// Set sets a value on the session for the provided key.
-	Set(req *http.Request, key string, value any)
+	// Save saves all changes from the changelog to the underlying session store.
+	Save() error
 }
 
-// Session provides a session instance for an end-user. This interface is
-// typically only used for back-channel interactions that do not contain a
-// session cookie on the request.
-type Session interface {
-	// GetString returns a session value based on the provided key.
-	GetString(key string) string
+type Options struct {
+	Request *http.Request
+}
 
-	// Get returns a session value based on the provided key.
-	Get(key string) any
+// SessionOpt is an option that allows to configure retrieval of the session.
+//
+// Example:
+//
+//	sess, _ := api.Session(WithRequest(req))
+//	isAuth, _ := sess.GetString("idp.authenticated")
+type SessionOpt func(*Options)
 
-	// Set sets a value on the session for the provided key.
-	Set(key string, value any)
+// WithRequest is a SessionOpt that allows to retrieve a particular session with
+// a specific request.
+//
+// Example:
+//
+//	sess, _ := api.Session(WithRequest(req))
+//	isAuth, _ := sess.GetString("idp.authenticated")
+func WithRequest(req *http.Request) SessionOpt {
+	return func(o *Options) {
+		o.Request = req
+	}
 }
