@@ -11,11 +11,25 @@ import "net/http"
 //	_ = sess.SetString("idp.authenticated", "true")
 //	_ = sess.Save()
 type Provider interface {
-	// GetString returns a session value based on the provided key.
+	// GetString returns a session value based on the provided key. If the key does
+	// not exist, the default or zero value will be returned (i.e, "").
 	GetString(key string) (string, error)
+
+	// GetBytes returns the []byte for a given key from the session data. If the key
+	// does not exist, the default or zero value will be returned (i.e, nil).
+	GetBytes(key string) ([]byte, error)
+
+	// GetAny returns a session value based the provided key. If the key does not
+	// exist, the default or zero value will be returned (i.e, nil). This method is
+	// mainly exposed for backwards compatibility any may be deprecated in the
+	// future.
+	GetAny(key string) (any, error)
 
 	// SetString adds a key and the corresponding string value to the session data.
 	SetString(key string, value string) error
+
+	// SetBytes adds a key and the corresponding []byte value to the session data.
+	SetBytes(key string, value []byte) error
 
 	// Save saves all changes from the changelog to the underlying session store.
 	Save() error
