@@ -6,6 +6,7 @@ import (
 	"github.com/strata-io/service-extension/router"
 	"github.com/strata-io/service-extension/secret"
 	"github.com/strata-io/service-extension/session"
+	"github.com/strata-io/service-extension/tai"
 )
 
 type Orchestrator interface {
@@ -32,4 +33,7 @@ type Orchestrator interface {
 
 	// Metadata gets the metadata associated with the Service Extension in use.
 	Metadata() map[string]any
+
+	// TAI gets a TAI provider.
+	TAI() tai.Provider
 }
