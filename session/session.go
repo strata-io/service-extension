@@ -19,6 +19,10 @@ type Provider interface {
 	// not exist, the default or zero value will be returned (i.e, false).
 	GetBool(key string) (bool, error)
 
+	// GetInt returns a session value based on the provided key. If the key does
+	// not exist, the default or zero value will be returned (i.e, 0).
+	GetInt(key string) (bool, error)
+
 	// GetBytes returns the []byte for a given key from the session data. If the key
 	// does not exist, the default or zero value will be returned (i.e, nil).
 	GetBytes(key string) ([]byte, error)
@@ -31,6 +35,9 @@ type Provider interface {
 
 	// SetString adds a key and the corresponding string value to the session data.
 	SetString(key string, value string) error
+
+	// SetInt adds a key and the corresponding int value to the session data.
+	SetInt(key string, value int) error
 
 	// SetBool adds a key and the corresponding boolean value to the session data.
 	SetBool(key string, value bool) error
