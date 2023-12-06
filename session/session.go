@@ -1,6 +1,9 @@
 package session
 
-import "net/http"
+import (
+	"net/http"
+	"time"
+)
 
 // Provider enables a way to interact with the underlying session store. Methods
 // on the provider take a request in order to look up the associated session.
@@ -27,6 +30,10 @@ type Provider interface {
 	// does not exist, the default or zero value will be returned (i.e, nil).
 	GetBytes(key string) ([]byte, error)
 
+	// GetTime returns the time.Time for a given key from the session data. If the key
+	// does not exist, the default or zero value will be returned (i.e, 0001-01-01).
+	GetTime(key string) (time.Time, error)
+
 	// GetAny returns a session value based the provided key. If the key does not
 	// exist, the default or zero value will be returned (i.e, nil). This method is
 	// mainly exposed for backwards compatibility any may be deprecated in the
@@ -44,6 +51,9 @@ type Provider interface {
 
 	// SetBytes adds a key and the corresponding []byte value to the session data.
 	SetBytes(key string, value []byte) error
+
+	// SetTime adds a key and the corresponding time.Time value to the session data.
+	SetTime(key string, value time.Time) error
 
 	// Save saves all changes from the changelog to the underlying session store.
 	Save() error
