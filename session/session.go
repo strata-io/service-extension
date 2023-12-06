@@ -21,7 +21,7 @@ type Provider interface {
 
 	// GetInt returns a session value based on the provided key. If the key does
 	// not exist, the default or zero value will be returned (i.e, 0).
-	GetInt(key string) (bool, error)
+	GetInt(key string) (int, error)
 
 	// GetBytes returns the []byte for a given key from the session data. If the key
 	// does not exist, the default or zero value will be returned (i.e, nil).
