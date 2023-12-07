@@ -31,7 +31,8 @@ type Provider interface {
 	GetBytes(key string) ([]byte, error)
 
 	// GetTime returns the time.Time for a given key from the session data. If the key
-	// does not exist, the default or zero value will be returned (i.e, 0001-01-01).
+	// does not exist, the default or zero value will be returned 
+	// (i.e, 0001-01-01 00:00:00 +0000 UTC).
 	GetTime(key string) (time.Time, error)
 
 	// GetAny returns a session value based the provided key. If the key does not
