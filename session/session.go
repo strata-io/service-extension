@@ -26,12 +26,16 @@ type Provider interface {
 	// not exist, the default or zero value will be returned (i.e, 0).
 	GetInt(key string) (int, error)
 
+	// GetFloat returns a session value based on the provided key. If the key does
+	// not exist, the default or zero value will be returned (i.e, 0.0).
+	GetFloat(key string) (float64, error)
+
 	// GetBytes returns the []byte for a given key from the session data. If the key
 	// does not exist, the default or zero value will be returned (i.e, nil).
 	GetBytes(key string) ([]byte, error)
 
 	// GetTime returns the time.Time for a given key from the session data. If the key
-	// does not exist, the default or zero value will be returned 
+	// does not exist, the default or zero value will be returned
 	// (i.e, 0001-01-01 00:00:00 +0000 UTC).
 	GetTime(key string) (time.Time, error)
 
@@ -46,6 +50,9 @@ type Provider interface {
 
 	// SetInt adds a key and the corresponding int value to the session data.
 	SetInt(key string, value int) error
+
+	// SetFloat adds a key and the corresponding float value to the session data.
+	SetFloat(key string, value float64) error
 
 	// SetBool adds a key and the corresponding boolean value to the session data.
 	SetBool(key string, value bool) error
