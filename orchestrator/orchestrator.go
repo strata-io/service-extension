@@ -19,7 +19,7 @@ type Orchestrator interface {
 
 	// RequestCache returns a cache specifically to only be used by service
 	// extensions.
-	RequestCache(namespace string, opts ...cache.Option)
+	RequestCache(namespace string, opts ...cache.Option) (cache.Cache, error)
 
 	// SecretProvider gets a secret provider. An error is returned if a secret
 	// provider is not configured.
