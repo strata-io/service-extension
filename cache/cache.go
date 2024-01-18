@@ -1,18 +1,14 @@
 package cache
 
-import (
-	"context"
-)
-
 type Cache interface {
 	// GetBytes returns the []byte for a given key. If the key does not exist, a
 	// ErrNotFound will be returned.
-	GetBytes(ctx context.Context, key string) ([]byte, error)
+	GetBytes(key string) ([]byte, error)
 
 	// SetBytes adds a key and the corresponding []byte value the backing store.
 	// If options are passed, they will be configured for the key. Any existing value
 	// for the key will be replaced.
-	SetBytes(ctx context.Context, key string, value []byte, opts ...Option) error
+	SetBytes(key string, value []byte, opts ...Option) error
 }
 
 // Options contains Options for a given piece of data.
