@@ -7,7 +7,34 @@ import "net/http"
 type IdentityProvider interface {
 	// Login provides a front-channel user login flow. The user will be redirected
 	// to the underlying IDP to authenticate the user.
-	Login(rw http.ResponseWriter, req *http.Request)
+	Login(rw http.ResponseWriter, req *http.Request, opts ...LoginOpt)
+}
+
+// LoginOptions store the options used to customize the user experience when
+// calling Login on an IdentityProvider.
+type LoginOptions struct {
+	Username    string
+	RedirectURL string
+}
+
+// LoginOpt allows for customizing the login experience.
+type LoginOpt func(cfg *LoginOptions)
+
+// WithLoginHint specifies the username of the user to the IdentityProvider.
+// This usually allows a known user to skip having to enter their username when
+// prompted for authentication to the IdentityProvider.
+func WithLoginHint(username string) LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.Username = username
+	}
+}
+
+// WithRedirectURL specifies landing page for the user after authenticating to
+// the IdentityProvider.
+func WithRedirectURL(url string) LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.RedirectURL = url
+	}
 }
 
 // AttributeProvider is used to retrieve attributes from an external system. A common
