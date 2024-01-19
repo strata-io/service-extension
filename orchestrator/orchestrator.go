@@ -1,6 +1,7 @@
 package orchestrator
 
 import (
+	"github.com/strata-io/service-extension/cache"
 	"github.com/strata-io/service-extension/idfabric"
 	"github.com/strata-io/service-extension/log"
 	"github.com/strata-io/service-extension/router"
@@ -15,6 +16,10 @@ type Orchestrator interface {
 
 	// Session returns the session.
 	Session(opts ...session.SessionOpt) (session.Provider, error)
+
+	// RequestCache returns a cache that can be used to store state across different service 
+	// extensions.
+	RequestCache(namespace string, opts ...cache.Constraint) (cache.Cache, error)
 
 	// SecretProvider gets a secret provider. An error is returned if a secret
 	// provider is not configured.
