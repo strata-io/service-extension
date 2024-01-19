@@ -24,9 +24,7 @@ type Options struct {
 // additional capabilities or modify the default behavior for how the data is stored.
 type Option func(*Options)
 
-// WithTTL can be used to add a Time-To-Live (TTL) to a given piece of data. When
-// this option is set, it is up to the Store implementations to determine how
-// best to honor this option.
+// WithTTL can be used to add a Time-To-Live (TTL) to a given piece of data.
 func WithTTL(ttl time.Duration) Option {
 	return func(do *Options) {
 		do.TTL = ttl
