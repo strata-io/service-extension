@@ -14,7 +14,7 @@ type Orchestrator interface {
 	// Logger gets a logger.
 	Logger() log.Logger
 
-	// Session returns the session.s
+	// Session returns the session.
 	Session(opts ...session.SessionOpt) (session.Provider, error)
 
 	// RequestCache returns a cache specifically to only be used by service
