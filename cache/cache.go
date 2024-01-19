@@ -3,8 +3,8 @@ package cache
 import "time"
 
 type Cache interface {
-	// GetBytes returns the []byte for a given key. If the key does not exist, a
-	// ErrNotFound will be returned.
+	// GetBytes returns the []byte for a given key. If the key does not exist, an
+	// error will be returned.
 	GetBytes(key string) ([]byte, error)
 
 	// SetBytes adds a key and the corresponding []byte value the backing store.
