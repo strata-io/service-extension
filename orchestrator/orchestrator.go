@@ -14,12 +14,12 @@ type Orchestrator interface {
 	// Logger gets a logger.
 	Logger() log.Logger
 
-	// Session returns the session.
+	// Session returns the session.s
 	Session(opts ...session.SessionOpt) (session.Provider, error)
 
 	// RequestCache returns a cache specifically to only be used by service
 	// extensions.
-	RequestCache(namespace string, opts ...cache.Option) (cache.Cache, error)
+	RequestCache(namespace string, opts ...cache.Constraint) (cache.Cache, error)
 
 	// SecretProvider gets a secret provider. An error is returned if a secret
 	// provider is not configured.
