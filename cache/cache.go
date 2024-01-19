@@ -31,7 +31,7 @@ func WithTTL(ttl time.Duration) Option {
 	}
 }
 
-// Constraints contains Constraints for a given piece of data.
+// Constraints are the constraints for a Cache.
 type Constraints struct {
 	// Name of the cache.
 	Name string
