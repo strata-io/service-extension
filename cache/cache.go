@@ -41,7 +41,7 @@ type Constraints struct {
 // additional capabilities or modify the default behavior for how the data is stored.
 type Constraint func(*Constraints)
 
-// WithName is an option that allows the ability to specify the cache name.
+// WithName is an option to specify the cache name.
 func WithName(name string) Constraint {
 	return func(do *Constraints) {
 		do.Name = name
