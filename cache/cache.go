@@ -37,8 +37,7 @@ type Constraints struct {
 	Name string
 }
 
-// Constraint is an option to pass to the Cache setters. Option can be used to add
-// additional capabilities or modify the default behavior for how the data is stored.
+// Constraint allows for customizing the Cache.
 type Constraint func(*Constraints)
 
 // WithName is an option to specify the cache name.
