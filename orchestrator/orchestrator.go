@@ -17,9 +17,9 @@ type Orchestrator interface {
 	// Session returns the session.
 	Session(opts ...session.SessionOpt) (session.Provider, error)
 
-	// RequestCache returns a cache that can be used to store state across different service 
+	// Cache returns a cache that can be used to store state across different service
 	// extensions.
-	RequestCache(namespace string, opts ...cache.Constraint) (cache.Cache, error)
+	Cache(namespace string, opts ...cache.Constraint) (cache.Cache, error)
 
 	// SecretProvider gets a secret provider. An error is returned if a secret
 	// provider is not configured.
