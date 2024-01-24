@@ -1,6 +1,8 @@
 package orchestrator
 
 import (
+	"io/fs"
+
 	"github.com/strata-io/service-extension/app"
 	"github.com/strata-io/service-extension/cache"
 	"github.com/strata-io/service-extension/idfabric"
@@ -10,6 +12,11 @@ import (
 	"github.com/strata-io/service-extension/session"
 	"github.com/strata-io/service-extension/tai"
 )
+
+type ConfigReader interface {
+	ReadFile(string) ([]byte, error)
+	FS() (fs.FS, error)
+}
 
 type Orchestrator interface {
 	// Logger gets a logger.
@@ -45,4 +52,6 @@ type Orchestrator interface {
 
 	// App gets the App associated with the Service Extension in use.
 	App() (app.App, error)
+
+	ConfigFS() ConfigReader
 }
