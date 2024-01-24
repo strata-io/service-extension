@@ -1,6 +1,7 @@
 package orchestrator
 
 import (
+	"github.com/strata-io/service-extension/app"
 	"github.com/strata-io/service-extension/idfabric"
 	"github.com/strata-io/service-extension/log"
 	"github.com/strata-io/service-extension/router"
@@ -36,4 +37,7 @@ type Orchestrator interface {
 
 	// TAI gets a TAI provider.
 	TAI() tai.Provider
+
+	// App gets the App associated with the Service Extension in use.
+	App() (app.App, error)
 }
