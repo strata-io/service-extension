@@ -1,0 +1,78 @@
+{
+  "appgateways": [
+    {
+      "basePath": "/",
+      "errorPage": "/error",
+      "host": "localhost",
+      "name": "Sonar",
+      "policies": [
+        {
+          "authentication": {
+            "allowUnauthenticated": true
+          },
+          "authorization": {
+            "allowAll": true
+          },
+          "location": "/accessdenied"
+        },
+        {
+          "authentication": {
+            "allowUnauthenticated": true
+          },
+          "authorization": {
+            "allowAll": true
+          },
+          "location": "/styles"
+        },
+        {
+          "authentication": {
+            "allowUnauthenticated": true
+          },
+          "authorization": {
+            "allowAll": true
+          },
+          "location": "/images"
+        },
+        {
+          "authentication": {
+            "idps": [
+              "Amazon_Cognito"
+            ]
+          },
+          "authorization": {
+            "allowAll": false
+          },
+          "headers": {
+            "SM_USER": "Amazon_Cognito.email",
+            "firstname": "Amazon_Cognito.given_name",
+            "lastname": "Amazon_Cognito.family_name"
+          },
+          "location": "/"
+        }
+      ],
+      "preserveHost": true,
+      "type": "header",
+      "unauthorizedPage": "/accessdenied",
+      "upstream": "http://localhost:8987"
+    }
+  ],
+  "connectors": [
+    {
+      "disablePKCE": false,
+      "name": "Amazon_Cognito",
+      "oauthClientID": "\u003cregistered_app_client_id\u003e",
+      "oauthClientSecret": "\u003cregistered_app_client_secret\u003e",
+      "oauthRedirectURL": "https://localhost/oidc",
+      "oidcLogoutCallbackURL": "",
+      "oidcWellKnownURL": "https://cognito-idp.\u003cAWS region\u003e.amazonaws.com/\u003cUserPoolId\u003e/.well-known/openid-configuration",
+      "type": "cognito"
+    }
+  ],
+  "session": {
+    "cookie": {
+      "domain": ""
+    },
+    "maxLifetimeSeconds": 0
+  },
+  "version": 30
+}
