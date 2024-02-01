@@ -1,6 +1,8 @@
 package orchestrator
 
 import (
+	"context"
+
 	"github.com/strata-io/service-extension/app"
 	"github.com/strata-io/service-extension/cache"
 	"github.com/strata-io/service-extension/idfabric"
@@ -45,4 +47,9 @@ type Orchestrator interface {
 
 	// App gets the App associated with the Service Extension in use.
 	App() (app.App, error)
+
+	// Context gets the context associated with the Service Extension in use.
+	// This is an experimental feature and may not be available in all Service Extensions.
+	// If context is unavailable, nil will be returned.
+	Context() context.Context
 }
