@@ -2,6 +2,7 @@ package orchestrator
 
 import (
 	"context"
+	"io/fs"
 
 	"github.com/strata-io/service-extension/app"
 	"github.com/strata-io/service-extension/cache"
@@ -52,4 +53,12 @@ type Orchestrator interface {
 	// This is an experimental feature and may not be available in all Service Extensions.
 	// If context is unavailable, nil will be returned.
 	Context() context.Context
+
+	// ConfigFS gets the configured ConfigReader.
+	ConfigFS() ConfigReader
+}
+
+type ConfigReader interface { // TODO ORC: should this be in another package?
+	FS() (fs.FS, error)
+	//ReadFile(string) ([]byte, error)
 }
