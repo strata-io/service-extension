@@ -2,9 +2,9 @@ package orchestrator
 
 import (
 	"context"
-	"io/fs"
 
 	"github.com/strata-io/service-extension/app"
+	"github.com/strata-io/service-extension/assets"
 	"github.com/strata-io/service-extension/cache"
 	"github.com/strata-io/service-extension/idfabric"
 	"github.com/strata-io/service-extension/log"
@@ -54,11 +54,7 @@ type Orchestrator interface {
 	// If context is unavailable, nil will be returned.
 	Context() context.Context
 
-	// ConfigFS gets the configured ConfigReader.
-	ConfigFS() ConfigReader
-}
-
-type ConfigReader interface { // TODO ORC: should this be in another package?
-	FS() (fs.FS, error)
-	//ReadFile(string) ([]byte, error)
+	// ServiceExtensionAssets exposes any assets that may have been bundled with the
+	// service extension.
+	ServiceExtensionAssets() assets.SEAssets
 }
