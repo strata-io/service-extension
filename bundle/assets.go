@@ -1,4 +1,4 @@
-package assets
+package bundle
 
 import "io/fs"
 
