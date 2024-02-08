@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/strata-io/service-extension/app"
+	"github.com/strata-io/service-extension/bundle"
 	"github.com/strata-io/service-extension/cache"
 	"github.com/strata-io/service-extension/idfabric"
 	"github.com/strata-io/service-extension/log"
@@ -52,4 +53,8 @@ type Orchestrator interface {
 	// This is an experimental feature and may not be available in all Service Extensions.
 	// If context is unavailable, nil will be returned.
 	Context() context.Context
+
+	// ServiceExtensionAssets exposes any assets that may have been bundled with the
+	// service extension.
+	ServiceExtensionAssets() bundle.SEAssets
 }
