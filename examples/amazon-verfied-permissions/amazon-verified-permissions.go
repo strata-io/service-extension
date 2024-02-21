@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"crypto/sha256"
 	"log"
 	"net/http"
 
@@ -16,8 +15,7 @@ import (
 const (
 	// policyStoreID: The ID of your Amazon Verified Permissions policy store.
 	policyStoreID = "your-verified-permissions-store-id"
-	// The region of your Amazon Verified Permissions policy store.
-	region = "your-region"
+
 	// The session value from your IdP used as the principal ID in the call to
 	// Amazon Verified Permissions.
 	principalID = "Azure-OIDC.mail"
@@ -87,13 +85,6 @@ func createVerifiedPermissionsRequest(principal, path string, api orchestrator.O
 		log.Fatal(err)
 	}
 	return output, err
-}
-
-// hashSHA256 is a helper method that returns a SHA256 hash of the provided data.
-func hashSHA256(data []byte) []byte {
-	hash := sha256.New()
-	hash.Write(data)
-	return hash.Sum(nil)
 }
 
 type Request struct {
