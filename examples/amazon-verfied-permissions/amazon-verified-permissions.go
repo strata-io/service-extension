@@ -37,8 +37,7 @@ func IsAuthorized(api orchestrator.Orchestrator, _ http.ResponseWriter, req *htt
 	logger := api.Logger()
 	email, _ := session.GetString(principalID)
 	logger.Info("requesting isAuthorized decision for " + email + " at " + req.URL.Path)
-	avpReq, err := createVerifiedPermissionsRequest("aadkins@sonarsystems.co", req.URL.Path, api)
-	//avpReq, err := createVerifiedPermissionsRequest(email, req.URL.Path, api)
+	avpReq, err := createVerifiedPermissionsRequest(email, req.URL.Path, api)
 	if err != nil {
 		logger.Info("error creating request: " + err.Error())
 		return false
