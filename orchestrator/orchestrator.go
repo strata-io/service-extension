@@ -54,6 +54,10 @@ type Orchestrator interface {
 	// If context is unavailable, nil will be returned.
 	Context() context.Context
 
+	// WithContext returns a shallow copy of an Orchestrator with the provided
+	// context.
+	WithContext(ctx context.Context) Orchestrator
+
 	// ServiceExtensionAssets exposes any assets that may have been bundled with the
 	// service extension.
 	ServiceExtensionAssets() bundle.SEAssets
