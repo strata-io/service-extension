@@ -1,3 +1,3 @@
 module github.com/strata-io/service-extension
 
-go 1.20
+go 1.22
