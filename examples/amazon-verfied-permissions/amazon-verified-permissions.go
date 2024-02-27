@@ -51,6 +51,7 @@ func IsAuthorized(api orchestrator.Orchestrator, _ http.ResponseWriter, req *htt
 	for _, dp := range avpReq.DeterminingPolicies {
 		logger.Info("se", "Determing policy id for the decision: "+*dp.PolicyId)
 	}
+
 	for _, d := range avpReq.Decision.Values() {
 		logger.Info("se", "isAuthorized decision from Amazon verified permissions: "+d)
 		return d == "ALLOW"
@@ -75,11 +76,13 @@ func createVerifiedPermissionsRequest(principal, path string, api orchestrator.O
 	vpClient := verifiedpermissions.NewFromConfig(cfg)
 
 	output, err := vpClient.IsAuthorized(context.TODO(), &verifiedpermissions.IsAuthorizedInput{
-
+		PolicyStoreId: &psId,
+		Action:        &types.ActionIdentifier{ActionId: &aId, ActionType: &aType},
+		Context:       nil,
+		Entities:      nil,
 		Principal:     &types.EntityIdentifier{EntityId: &principal, EntityType: &pType},
 		Resource:      &types.EntityIdentifier{EntityId: &path, EntityType: &rType},
-		Action:        &types.ActionIdentifier{ActionId: &aId, ActionType: &aType},
-		PolicyStoreId: &psId})
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
