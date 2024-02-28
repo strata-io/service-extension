@@ -1,134 +1,92 @@
 package main
 
 import (
-	"bytes"
 	"context"
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
-	"fmt"
-	"io"
 	"log"
 	"net/http"
-	"time"
 
-	"maverics/app"
-	"maverics/aws/config"
-	v4 "maverics/aws/signer/v4"
-	"maverics/session"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/verifiedpermissions"
+	"github.com/aws/aws-sdk-go-v2/service/verifiedpermissions/types"
+	"github.com/strata-io/service-extension/orchestrator"
 )
 
 // The following values should be updated for your environment.
 const (
 	// policyStoreID: The ID of your Amazon Verified Permissions policy store.
 	policyStoreID = "your-verified-permissions-store-id"
-	// The region of your Amazon Verified Permissions policy store.
-	region = "your-region"
+
 	// The session value from your IdP used as the principal ID in the call to
 	// Amazon Verified Permissions.
-	principalID = "Amazon_Cognito.email"
+	principalID = "Azure-OIDC.mail"
 	// The action type to be used in the isAuthorized request.
 	actionType = "Action"
 	// The principal type to be used in the isAuthorized request.
 	principalType = "User"
 	// The resource type to be used in the isAuthorized request.
 	resourceType = "Endpoint"
+	//The action value to be used in the isAuthorized request.
+	actionId = "ReadEndpoint"
 )
 
 // IsAuthorized is called after you log in with your IdP.  This function calls the
 // Amazon Verified Permissions API with the associated principalID and endpoint to
 // determine the authorization decision.
-func IsAuthorized(_ *app.AppGateway, _ http.ResponseWriter, req *http.Request) bool {
-	email := session.GetString(req, principalID)
-	log.Println("requesting isAuthorized decision for " + email + " at " + req.URL.Path)
-
-	avpReq, err := createVerifiedPermissionsRequest(email, req.URL.Path)
+func IsAuthorized(api orchestrator.Orchestrator, _ http.ResponseWriter, req *http.Request) bool {
+	session, _ := api.Session()
+	logger := api.Logger()
+	email, _ := session.GetString(principalID)
+	logger.Info("requesting isAuthorized decision for " + email + " at " + req.URL.Path)
+	avpReq, err := createVerifiedPermissionsRequest(email, req.URL.Path, api)
 	if err != nil {
-		log.Println("error creating request: " + err.Error())
+		logger.Info("error creating request: " + err.Error())
 		return false
 	}
-
-	result, err := http.DefaultClient.Do(avpReq)
-	if err != nil {
-		log.Println("error sending request: " + err.Error())
-		return false
+	if len(avpReq.Errors) > 0 {
+		for _, e := range avpReq.Errors {
+			logger.Error("se", "Error during IsAuthorized: "+*e.ErrorDescription)
+		}
 	}
-	responseBody, err := io.ReadAll(result.Body)
-	if err != nil {
-		log.Println("error reading response: " + err.Error())
-		return false
+	logger.Info("se", "The following policy id's contributed to the decision:")
+	for _, dp := range avpReq.DeterminingPolicies {
+		logger.Info("se", "Determing policy id for the decision: "+*dp.PolicyId)
 	}
 
-	var response Response
-	err = json.Unmarshal(responseBody, &response)
-	if err != nil {
-		log.Println("error unmarshalling response: " + err.Error())
-		return false
+	for _, d := range avpReq.Decision.Values() {
+		logger.Info("se", "isAuthorized decision from Amazon verified permissions: "+d)
+		return d == "ALLOW"
 	}
-
-	log.Println("isAuthorized decision from Amazon verified permissions: " + string(responseBody))
-	return response.Decision == "ALLOW"
+	return false
 }
 
 // createVerifiedPermissionsRequest builds a new verified permissions API request with the supplied
 // principal and path.
-func createVerifiedPermissionsRequest(principal, path string) (*http.Request, error) {
-	reqBody := Request{
-		PolicyStoreID: policyStoreID,
-		Action: Action{
-			ActionId:   "view",
-			ActionType: actionType,
-		},
-		Principal: Principal{
-			EntityId:   principal,
-			EntityType: principalType,
-		},
-		Resource: Resource{
-			EntityId:   path,
-			EntityType: resourceType,
-		},
-	}
-	postBody, err := json.Marshal(reqBody)
+func createVerifiedPermissionsRequest(principal, path string, api orchestrator.Orchestrator) (*verifiedpermissions.IsAuthorizedOutput, error) {
+
+	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
+	pType := principalType
+	rType := resourceType
+	aType := actionType
+	psId := policyStoreID
+	aId := actionId
 
-	endpoint := fmt.Sprintf("https://verifiedpermissions.%s.amazonaws.com", region)
-	avpReq, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(postBody))
+	vpClient := verifiedpermissions.NewFromConfig(cfg)
+
+	output, err := vpClient.IsAuthorized(context.TODO(), &verifiedpermissions.IsAuthorizedInput{
+		PolicyStoreId: &psId,
+		Action:        &types.ActionIdentifier{ActionId: &aId, ActionType: &aType},
+		Context:       nil,
+		Entities:      nil,
+		Principal:     &types.EntityIdentifier{EntityId: &principal, EntityType: &pType},
+		Resource:      &types.EntityIdentifier{EntityId: &path, EntityType: &rType},
+	})
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
-	avpReq.Header.Add("Content-Type", "application/x-amz-json-1.0")
-	avpReq.Header.Add("X-Amz-Target", "VerifiedPermissions.IsAuthorized")
-
-	now := time.Now()
-	ctx := context.TODO()
-	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
-	if err != nil {
-		return nil, err
-	}
-
-	creds, err := cfg.Credentials.Retrieve(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	payloadHash := hex.EncodeToString(hashSHA256(postBody))
-
-	signer := v4.NewSigner()
-	err = signer.SignHTTP(ctx, creds, avpReq, payloadHash, "verifiedpermissions", region, now)
-	if err != nil {
-		return nil, err
-	}
-
-	return avpReq, nil
-}
-
-// hashSHA256 is a helper method that returns a SHA256 hash of the provided data.
-func hashSHA256(data []byte) []byte {
-	hash := sha256.New()
-	hash.Write(data)
-	return hash.Sum(nil)
+	return output, err
 }
 
 type Request struct {
