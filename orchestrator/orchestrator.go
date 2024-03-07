@@ -12,6 +12,7 @@ import (
 	"github.com/strata-io/service-extension/secret"
 	"github.com/strata-io/service-extension/session"
 	"github.com/strata-io/service-extension/tai"
+	"github.com/strata-io/service-extension/weblogic"
 )
 
 type Orchestrator interface {
@@ -44,6 +45,9 @@ type Orchestrator interface {
 
 	// TAI gets a TAI provider.
 	TAI() tai.Provider
+
+	// WebLogic gets a WebLogic provider.
+	WebLogic() weblogic.Provider
 
 	// Context gets the context associated with the Service Extension in use.
 	// This is an experimental feature and may not be available in all Service Extensions.
