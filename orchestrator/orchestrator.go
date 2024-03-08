@@ -12,6 +12,7 @@ import (
 	"github.com/strata-io/service-extension/secret"
 	"github.com/strata-io/service-extension/session"
 	"github.com/strata-io/service-extension/tai"
+	"github.com/strata-io/service-extension/weblogic"
 )
 
 type Orchestrator interface {
@@ -20,10 +21,6 @@ type Orchestrator interface {
 
 	// Session returns the session.
 	Session(opts ...session.SessionOpt) (session.Provider, error)
-
-	// Cache returns a cache that can be used to store state across different service
-	// extensions.
-	Cache(namespace string, opts ...cache.Constraint) (cache.Cache, error)
 
 	// SecretProvider gets a secret provider. An error is returned if a secret
 	// provider is not configured.
@@ -37,17 +34,20 @@ type Orchestrator interface {
 	// the attribute provider is not found.
 	AttributeProvider(name string) (idfabric.AttributeProvider, error)
 
+	// Metadata gets the metadata associated with the Service Extension in use.
+	Metadata() map[string]any
+
 	// Router gets a router.
 	Router() router.Router
 
-	// Metadata gets the metadata associated with the Service Extension in use.
-	Metadata() map[string]any
+	// App gets the App associated with the Service Extension in use.
+	App() (app.App, error)
 
 	// TAI gets a TAI provider.
 	TAI() tai.Provider
 
-	// App gets the App associated with the Service Extension in use.
-	App() (app.App, error)
+	// WebLogic gets a WebLogic provider.
+	WebLogic() weblogic.Provider
 
 	// Context gets the context associated with the Service Extension in use.
 	// This is an experimental feature and may not be available in all Service Extensions.
@@ -57,6 +57,10 @@ type Orchestrator interface {
 	// WithContext returns a shallow copy of an Orchestrator with the provided
 	// context.
 	WithContext(ctx context.Context) Orchestrator
+
+	// Cache returns a cache that can be used to store state across different service
+	// extensions.
+	Cache(namespace string, opts ...cache.Constraint) (cache.Cache, error)
 
 	// ServiceExtensionAssets exposes any assets that may have been bundled with the
 	// service extension.
