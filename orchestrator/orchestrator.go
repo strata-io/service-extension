@@ -67,6 +67,6 @@ type Orchestrator interface {
 	// service extension.
 	ServiceExtensionAssets() bundle.SEAssets
 
-	// HTTP gets an interface with shared HTTP functionality.
+	// HTTP provides utilities for making HTTP requests.
 	HTTP() http.HTTP
 }
