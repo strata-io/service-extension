@@ -6,10 +6,10 @@ import "net/http"
 type HTTP interface {
 	// GetClient returns the HTTP client based on the provided name.
 	// If the client does not exist, the second return value will be false.
-	GetClient(name string) (*http.Client, bool)
+	GetClient(name string) (*http.Client, error)
 
 	// SetClient adds a client to the HTTP client store based on the provided name.
-	SetClient(name string, client *http.Client)
+	SetClient(name string, client *http.Client) error
 
 	// DefaultClient returns the default HTTP client.
 	DefaultClient() *http.Client
