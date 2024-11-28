@@ -6,6 +6,7 @@ import (
 	"github.com/strata-io/service-extension/app"
 	"github.com/strata-io/service-extension/bundle"
 	"github.com/strata-io/service-extension/cache"
+	"github.com/strata-io/service-extension/http"
 	"github.com/strata-io/service-extension/idfabric"
 	"github.com/strata-io/service-extension/log"
 	"github.com/strata-io/service-extension/router"
@@ -65,4 +66,7 @@ type Orchestrator interface {
 	// ServiceExtensionAssets exposes any assets that may have been bundled with the
 	// service extension.
 	ServiceExtensionAssets() bundle.SEAssets
+
+	// HTTP provides utilities for making HTTP requests.
+	HTTP() http.HTTP
 }
