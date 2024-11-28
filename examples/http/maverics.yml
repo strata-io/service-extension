@@ -1,0 +1,6 @@
+version: 0.1
+apis:
+  - name: ServeSE
+    serveSE:
+      funcName: "ServeSE"
+      file: http.go
