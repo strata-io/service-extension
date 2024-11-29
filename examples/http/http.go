@@ -16,7 +16,10 @@ type User struct {
 }
 
 func ServeSE(api orchestrator.Orchestrator) error {
-	// Initialize the HTTP client that can be reused.
+	// Initialize the HTTP client that can be reused. Reuse is important
+	// as the client will pool the underlying TCP connections to enable
+	// connection reuse. Reusing a client also helps ensures the system
+	// is not overloaded by the opening of too many connections.
 	apiHttp := api.HTTP()
 	err := apiHttp.SetClient(
 		"myClient",
