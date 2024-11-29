@@ -39,6 +39,9 @@ func ServeSE(api orchestrator.Orchestrator) error {
 	if err != nil {
 		return fmt.Errorf("unable to fetch users: %w", err)
 	}
+	// Always be sure to close the response body regardless of whether it is read
+	// or not. Closing the body releases resources and memory used for the
+	// connection. Closing the body is critical to enable connection reuse.
 	defer resp.Body.Close()
 
 	data, err := io.ReadAll(resp.Body)
