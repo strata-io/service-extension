@@ -2,6 +2,10 @@ package idfabric
 
 import "net/http"
 
+const (
+	GrantTypeCliendCredentials = iota + 1
+)
+
 // IdentityProvider enables a way to interact with the identity provider.
 // Interactions may include login and logout.
 type IdentityProvider interface {
@@ -16,10 +20,12 @@ type LoginOptions struct {
 	Username    string
 	RedirectURL string
 
-	// If ClientCredentialsResult is not nil, the client_credentials grnat type
-	// will be used for the Login method of this IdP.
-	// This callback will be called with the result of the Login() attempt.
-	ClientCredentialsResult func(*TokenResult, *error)
+	GrantType int
+
+	// ClientCredentialsResultCallback is called if GrantType is
+	// 'GrantTypeClientCredentials' and it is not nil.
+	// It is called at the end of Login() with the results of the
+	ClientCredentialsResultCallback func(*TokenResult, *error)
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -44,13 +50,14 @@ func WithRedirectURL(url string) LoginOpt {
 
 type TokenResult struct{}
 
-// WithGrantTypeClientCredentials sets the grant type for requests to this IdP
-// to 'client_credentials'.
-// It sets the token and error result pointers to be
-// populated by the Login() method.
-func WithGrantTypeClientCredentials(f func(t *TokenResult, e *error)) LoginOpt {
+// WithGrantTypeClientCredentials sets the grant type for this Login attempt to
+// 'client_credentials'.
+// The provided callback is called at the end of the Login() routine with the
+// results.
+func WithGrantTypeClientCredentials(callback func(t *TokenResult, e *error)) LoginOpt {
 	return func(cfg *LoginOptions) {
-		cfg.ClientCredentialsResult = f
+		cfg.GrantType = GrantTypeCliendCredentials
+		cfg.ClientCredentialsResultCallback = callback
 	}
 }
 
