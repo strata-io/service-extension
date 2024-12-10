@@ -20,12 +20,9 @@ type LoginOptions struct {
 	Username    string
 	RedirectURL string
 
-	GrantType int
-
-	// ClientCredentialsResultCallback is called if GrantType is
-	// 'GrantTypeClientCredentials' and it is not nil.
-	// It is called at the end of Login() with the results of the
-	ClientCredentialsResultCallback func(*TokenResult, *error)
+	GrantType   int
+	ErrorResult *error
+	TokenResult *TokenResult
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -52,12 +49,12 @@ type TokenResult struct{}
 
 // WithGrantTypeClientCredentials sets the grant type for this Login attempt to
 // 'client_credentials'.
-// The provided callback is called at the end of the Login() routine with the
-// results.
-func WithGrantTypeClientCredentials(callback func(t *TokenResult, e *error)) LoginOpt {
+// The results of Login will be stored in tokenResult and errorResult.
+func WithGrantTypeClientCredentials(tokenResult *TokenResult, errorResult *error) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.GrantType = GrantTypeClientCredentials
-		cfg.ClientCredentialsResultCallback = callback
+		cfg.TokenResult = tokenResult
+		cfg.ErrorResult = errorResult
 	}
 }
 
