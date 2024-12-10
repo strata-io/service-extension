@@ -3,7 +3,7 @@ package idfabric
 import "net/http"
 
 const (
-	GrantTypeCliendCredentials = iota + 1
+	GrantTypeClientCredentials = iota + 1
 )
 
 // IdentityProvider enables a way to interact with the identity provider.
@@ -56,7 +56,7 @@ type TokenResult struct{}
 // results.
 func WithGrantTypeClientCredentials(callback func(t *TokenResult, e *error)) LoginOpt {
 	return func(cfg *LoginOptions) {
-		cfg.GrantType = GrantTypeCliendCredentials
+		cfg.GrantType = GrantTypeClientCredentials
 		cfg.ClientCredentialsResultCallback = callback
 	}
 }
