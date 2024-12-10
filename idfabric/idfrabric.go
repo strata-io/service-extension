@@ -15,6 +15,11 @@ type IdentityProvider interface {
 type LoginOptions struct {
 	Username    string
 	RedirectURL string
+
+	// If ClientCredentialsResult is not nil, the client_credentials grnat type
+	// will be used for the Login method of this IdP.
+	// This callback will be called with the result of the Login() attempt.
+	ClientCredentialsResult func(*TokenResult, *error)
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -34,6 +39,18 @@ func WithLoginHint(username string) LoginOpt {
 func WithRedirectURL(url string) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.RedirectURL = url
+	}
+}
+
+type TokenResult struct{}
+
+// WithGrantTypeClientCredentials sets the grant type for requests to this IdP
+// to 'client_credentials'.
+// It sets the token and error result pointers to be
+// populated by the Login() method.
+func WithGrantTypeClientCredentials(f func(t *TokenResult, e *error)) LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.ClientCredentialsResult = f
 	}
 }
 
