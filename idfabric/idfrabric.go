@@ -2,6 +2,10 @@ package idfabric
 
 import "net/http"
 
+const (
+	GrantTypeClientCredentials = iota + 1
+)
+
 // IdentityProvider enables a way to interact with the identity provider.
 // Interactions may include login and logout.
 type IdentityProvider interface {
@@ -15,6 +19,9 @@ type IdentityProvider interface {
 type LoginOptions struct {
 	Username    string
 	RedirectURL string
+
+	GrantType   int
+	LoginResult *LoginResult
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -34,6 +41,27 @@ func WithLoginHint(username string) LoginOpt {
 func WithRedirectURL(url string) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.RedirectURL = url
+	}
+}
+
+type LoginResult struct {
+	TokenResult
+	Error error
+}
+
+type TokenResult struct {
+	AccessToken string
+	Scope       string
+	ExpiresIn   int
+}
+
+// WithGrantTypeClientCredentials sets the grant type for this Login attempt to
+// 'client_credentials'.
+// The results of Login will be stored in tokenResult and errorResult.
+func WithGrantTypeClientCredentials(result *LoginResult) LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.GrantType = GrantTypeClientCredentials
+		cfg.LoginResult = result
 	}
 }
 
