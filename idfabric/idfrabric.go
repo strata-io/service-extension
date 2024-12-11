@@ -21,8 +21,7 @@ type LoginOptions struct {
 	RedirectURL string
 
 	GrantType   int
-	ErrorResult *error
-	TokenResult *TokenResult
+	LoginResult *LoginResult
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -45,16 +44,24 @@ func WithRedirectURL(url string) LoginOpt {
 	}
 }
 
-type TokenResult struct{}
+type LoginResult struct {
+	TokenResult
+	Error error
+}
+
+type TokenResult struct {
+	AccessToken string
+	Scope       string
+	ExpiresIn   int
+}
 
 // WithGrantTypeClientCredentials sets the grant type for this Login attempt to
 // 'client_credentials'.
 // The results of Login will be stored in tokenResult and errorResult.
-func WithGrantTypeClientCredentials(tokenResult *TokenResult, errorResult *error) LoginOpt {
+func WithGrantTypeClientCredentials(result *LoginResult) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.GrantType = GrantTypeClientCredentials
-		cfg.TokenResult = tokenResult
-		cfg.ErrorResult = errorResult
+		cfg.LoginResult = result
 	}
 }
 
