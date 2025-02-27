@@ -13,8 +13,9 @@ type IdentityProvider interface {
 // LoginOptions store the options used to customize the user experience when
 // calling Login on an IdentityProvider.
 type LoginOptions struct {
-	Username    string
-	RedirectURL string
+	Username             string
+	RedirectURL          string
+	SilentAuthentication bool
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -26,6 +27,19 @@ type LoginOpt func(cfg *LoginOptions)
 func WithLoginHint(username string) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.Username = username
+	}
+}
+
+// WithSilentAuthentication specifies to the IDP that no user interaction should
+// occur as part of the login.
+//
+// In the context of OIDC, this option will result in the 'prompt=none' query
+// parameter being sent as part of the authentication request. For more details,
+// please see the OIDC RFC
+// https://openid.net/specs/openid-connect-core-1_0-final.html#AuthRequest.
+func WithSilentAuthentication() LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.SilentAuthentication = true
 	}
 }
 
