@@ -7,8 +7,9 @@ development of Service Extensions.
 ## Local Setup
 To develop Service Extensions on your local machine, follow the instructions below. 
 The steps listed below are only to aid in local development and are not required to run
-the Maverics platform. 
+the Maverics platform.
 
+### Project Initialization
 Download the latest version of Go. [Instructions](https://go.dev/doc/install) can be 
 found on the Go website.
 
@@ -50,6 +51,28 @@ func IsAuthenticated(api orchestrator.Orchestrator, rw http.ResponseWriter, req 
 	return false
 }
 ```
+
+### Testing, Vetting and Formatting
+Service extensions can be programmatically tested. To run unit tests, run the 
+standard `go test ./...` command in the root of your project directory. To learn more
+about how to test service extensions, see the Go testing [docs](https://pkg.go.dev/cmd/go#hdr-Test_packages)
+or run `go help test`.
+
+Vetting service extensions can help catch common programming errors. To vet your 
+extensions, run the `go vet ./...` command in the root of your project directory. To 
+learn more about vetting service extensions, see the Go vet 
+[docs](https://pkg.go.dev/cmd/vet) or run `go help vet`.
+
+Formatting your code can help make your code more readable and idiomatic. To format 
+service extensions, run the `go fmt ./...` command in the root of your project 
+directory. To learn more about formatting service extensions, see the Go formatting
+[docs](https://pkg.go.dev/cmd/gofmt) or run `go help fmt`.
+
+Most integrated development environments (IDEs) have built-in support for testing,
+vetting, and formatting code. See the below list for how to leverage these features 
+in popular IDEs:
+- [VSCode](https://learn.microsoft.com/en-us/azure/developer/go/configure-visual-studio-code)
+- [GoLand](https://www.jetbrains.com/help/go/quick-start-guide-goland.html)
 
 ## Documentation
 For library documentation, please visit the [Godoc site](https://pkg.go.dev/github.com/strata-io/service-extension).
