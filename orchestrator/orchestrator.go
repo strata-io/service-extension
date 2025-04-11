@@ -2,7 +2,6 @@ package orchestrator
 
 import (
 	"context"
-	nethttp "net/http"
 
 	"github.com/strata-io/service-extension/app"
 	"github.com/strata-io/service-extension/bundle"
@@ -20,8 +19,6 @@ import (
 type Orchestrator interface {
 	// Logger gets a logger.
 	Logger() log.Logger
-
-	LoggerWithRequest(req *nethttp.Request) log.Logger
 
 	// Session returns the session.
 	Session(opts ...session.SessionOpt) (session.Provider, error)
