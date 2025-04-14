@@ -18,7 +18,7 @@ import (
 
 type Orchestrator interface {
 	// Logger gets a logger.
-	Logger() log.Logger
+	Logger(opts ...log.Option) log.Logger
 
 	// Session returns the session.
 	Session(opts ...session.SessionOpt) (session.Provider, error)
