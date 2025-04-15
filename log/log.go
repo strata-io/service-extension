@@ -27,14 +27,14 @@ type Logger interface {
 //	logger := api.Logger(WithFromRequest(req))
 type Option func(*Options)
 
-// WithFromRequest retrieves the logger from the request's context. If no logger is
+// WithRequest retrieves the logger from the request's context. If no logger is
 // found on the request's context or the request is nil, a default logger will be
 // returned.
 //
 // This method only needs be used in service extensions that expose their own
 // HTTP handlers using router.HandleFunc. Using this request bound logger ensures
 // request specific key-value pairs (e.g. traceID) are included in log messages.
-func WithFromRequest(r *http.Request) Option {
+func WithRequest(r *http.Request) Option {
 	return func(o *Options) {
 		o.Request = r
 	}
