@@ -1,6 +1,8 @@
 package http
 
-import "net/http"
+import (
+	"net/http"
+)
 
 // HTTP provides a way to interact with the HTTP client.
 type HTTP interface {
