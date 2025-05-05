@@ -16,6 +16,11 @@ type LoginOptions struct {
 	Username             string
 	RedirectURL          string
 	SilentAuthentication bool
+	RegistrationDisabled bool
+}
+
+type Param struct {
+	Key, Value string
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -27,6 +32,14 @@ type LoginOpt func(cfg *LoginOptions)
 func WithLoginHint(username string) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.Username = username
+	}
+}
+
+// WithRegistrationDisabled specifies that the IdP should not allow the user to
+// register a new account.
+func WithRegistrationDisabled() LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.RegistrationDisabled = true
 	}
 }
 
