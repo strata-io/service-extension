@@ -16,11 +16,7 @@ type LoginOptions struct {
 	Username             string
 	RedirectURL          string
 	SilentAuthentication bool
-	QueryParams          map[string]string
-}
-
-type Param struct {
-	Key, Value string
+	QueryParams          map[string][]string
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -39,7 +35,10 @@ func WithLoginHint(username string) LoginOpt {
 // authorization request.
 func WithQueryParam(k, v string) LoginOpt {
 	return func(cfg *LoginOptions) {
-		cfg.QueryParams[k] = v
+		if len(cfg.QueryParams) == 0 {
+			cfg.QueryParams = make(map[string][]string)
+		}
+		cfg.QueryParams[k] = append(cfg.QueryParams[k], v)
 	}
 }
 
