@@ -1,6 +1,9 @@
 package idfabric
 
-import "net/http"
+import (
+	"net/http"
+	"net/url"
+)
 
 // IdentityProvider enables a way to interact with the identity provider.
 // Interactions may include login and logout.
@@ -16,7 +19,7 @@ type LoginOptions struct {
 	Username             string
 	RedirectURL          string
 	SilentAuthentication bool
-	QueryParams          map[string][]string
+	QueryParams          url.Values
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -36,9 +39,9 @@ func WithLoginHint(username string) LoginOpt {
 func WithQueryParam(k, v string) LoginOpt {
 	return func(cfg *LoginOptions) {
 		if len(cfg.QueryParams) == 0 {
-			cfg.QueryParams = make(map[string][]string)
+			cfg.QueryParams = url.Values{}
 		}
-		cfg.QueryParams[k] = append(cfg.QueryParams[k], v)
+		cfg.QueryParams.Add(k, v)
 	}
 }
 
