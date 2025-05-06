@@ -16,7 +16,7 @@ type LoginOptions struct {
 	Username             string
 	RedirectURL          string
 	SilentAuthentication bool
-	RegistrationDisabled bool
+	QueryParams          map[string]string
 }
 
 type Param struct {
@@ -35,11 +35,11 @@ func WithLoginHint(username string) LoginOpt {
 	}
 }
 
-// WithRegistrationDisabled specifies that the IdP should not allow the user to
-// register a new account.
-func WithRegistrationDisabled() LoginOpt {
+// WithQueryParam enables a way to specify custom query parameters to be added to the
+// authorization request.
+func WithQueryParam(k, v string) LoginOpt {
 	return func(cfg *LoginOptions) {
-		cfg.RegistrationDisabled = true
+		cfg.QueryParams[k] = v
 	}
 }
 
