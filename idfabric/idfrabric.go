@@ -66,6 +66,25 @@ func WithRedirectURL(url string) LoginOpt {
 	}
 }
 
+type QueryOptions struct {
+	BaseDN string
+	Filter string
+}
+
+type QueryOption func(o *QueryOptions)
+
+func WithLDAPBaseDN(baseDN string) QueryOption {
+	return func(o *QueryOptions) {
+		o.BaseDN = baseDN
+	}
+}
+
+func WithLDAPFilter(filter string) QueryOption {
+	return func(o *QueryOptions) {
+		o.Filter = filter
+	}
+}
+
 // AttributeProvider is used to retrieve attributes from an external system. A common
 // attribute provider would be a data store such as LDAP.
 type AttributeProvider interface {
@@ -76,5 +95,9 @@ type AttributeProvider interface {
 	// returned. When a given AttributeProvider returns a multivalued attribute such
 	// as group memberships, the values are concatenated using a delimiter that is
 	// defined on the Identity Fabric component.
-	Query(subject string, attributes []string) (map[string]string, error)
+	Query(
+		subject string,
+		attributes []string,
+		opts ...QueryOption,
+	) (map[string]string, error)
 }
