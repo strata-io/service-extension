@@ -8,11 +8,42 @@ import (
 // Provider enables a way to interact with the underlying session store. Methods
 // on the provider take a request in order to look up the associated session.
 //
-// Example:
+// Example (basic setters and getters):
 //
 //	sess, _ := api.Session()
 //	_ = sess.SetString("idp.authenticated", "true")
 //	_ = sess.Save()
+//	isAuthn, _ := sess.GetString("idp.authenticated")
+//
+// Example (JSON setters and getters):
+//
+//	sess, _ := api.Session()
+//	type address struct {
+//		City    string `json:"city"`
+//		State   string `json:"state"`
+//		Country string `json:"country"`
+//	}
+//
+//	type person struct {
+//		Name    string  `json:"name"`
+//		Age     int     `json:"age"`
+//		Address address `json:"address"`
+//	}
+//
+//	var p = person{
+//		Name: "John Doe",
+//		Age:  42,
+//		Address: address{
+//			City:    "Boulder",
+//			State:   "CO",
+//			Country: "USA",
+//		},
+//	}
+//	_ := sess.SetJSON("profile", &p)
+//	_ = sess.Save()
+//
+//	var p2 person
+//	_ := sess.GetJSON("profile", &p2)
 type Provider interface {
 	// GetString returns a session value based on the provided key. If the key does
 	// not exist, the default or zero value will be returned (i.e, "").
@@ -39,11 +70,10 @@ type Provider interface {
 	// (i.e, 0001-01-01 00:00:00 +0000 UTC).
 	GetTime(key string) (time.Time, error)
 
-	// GetAny returns a session value based the provided key. If the key does not
-	// exist, the default or zero value will be returned (i.e, nil). This method is
-	// mainly exposed for backwards compatibility any may be deprecated in the
-	// future.
-	GetAny(key string) (any, error)
+	// GetJSON parses the JSON-encoded data for a given key from the session and
+	// stores the result in the value pointed to by dest. If dest is nil or not a
+	// pointer, an error is returned.
+	GetJSON(key string, dest any) error
 
 	// SetString adds a key and the corresponding string value to the session data.
 	SetString(key string, value string) error
@@ -62,6 +92,10 @@ type Provider interface {
 
 	// SetTime adds a key and the corresponding time.Time value to the session data.
 	SetTime(key string, value time.Time) error
+
+	// SetJSON adds a key and the corresponding value to the session data. The
+	// value must be JSON encodable or an error will be returned.
+	SetJSON(key string, value any) error
 
 	// Save saves all changes from the changelog to the underlying session store.
 	Save() error
