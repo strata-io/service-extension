@@ -25,7 +25,7 @@ type LoginOptions struct {
 	SilentAuthentication bool
 	QueryParams          url.Values
 	GrantType            int
-	TokenRequest         TokenRequest
+	TokenRequest         ROPCRequest
 	LoginResult          *LoginResult
 }
 
@@ -65,11 +65,11 @@ func WithSilentAuthentication() LoginOpt {
 	}
 }
 
-// TokenRequest is used to authenticate to the IdentityProvider using the
+// ROPCRequest is used to authenticate to the IdentityProvider using the
 // Resource Owner Password Credentials (ROPC) flow.
-type TokenRequest struct {
-	Username string `json:"username,omitempty"`
-	Password string `json:"password,omitempty"`
+type ROPCRequest struct {
+	Username string
+	Password string
 }
 
 // LoginResult is the response from the IdentityProvider after a login attempt.
@@ -81,22 +81,22 @@ type LoginResult struct {
 // TokenResult is the response from the IdentityProvider after a login attempt.
 type TokenResult struct {
 	// AccessToken is the token that can be used to access protected resources.
-	AccessToken string `json:"access_token,omitempty"`
+	AccessToken string
 	// IDToken is the token that contains user identity information.
-	IDToken string `json:"id_token,omitempty"`
+	IDToken string
 	// RefreshToken is the token that can be used to refresh the access token.
-	RefreshToken string `json:"refresh_token,omitempty"`
+	RefreshToken string
 	// ExpiresIn is the number of seconds until the access token expires.
-	ExpiresIn int64 `json:"expires_in,omitempty"`
+	ExpiresIn int64
 	// Scope is the scope of the access token.
-	Scope string `json:"scope,omitempty"`
+	Scope string
 }
 
-// WithROPC specifies the Resource Owner Password Credentials (ROPC) flow for
-// authenticating a user. This flow is typically used for legacy applications
-// that require a username and password to authenticate the user directly.
-// https://datatracker.ietf.org/doc/html/rfc6749#section-4.3
-func WithROPC(input TokenRequest, output *LoginResult) LoginOpt {
+// WithGrantTypeROPC specifies the Resource Owner Password Credentials (ROPC)
+// flow for authenticating a user. This flow is typically used for legacy
+// applications that require a username and password to authenticate the user
+// directly. https://datatracker.ietf.org/doc/html/rfc6749#section-4.3
+func WithGrantTypeROPC(input ROPCRequest, output *LoginResult) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.GrantType = GrantTypeROPC
 		cfg.TokenRequest = input
