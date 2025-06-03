@@ -5,6 +5,10 @@ import (
 	"net/url"
 )
 
+const (
+	GrantTypeROPC = iota + 1
+)
+
 // IdentityProvider enables a way to interact with the identity provider.
 // Interactions may include login and logout.
 type IdentityProvider interface {
@@ -20,6 +24,9 @@ type LoginOptions struct {
 	RedirectURL          string
 	SilentAuthentication bool
 	QueryParams          url.Values
+	GrantType            int
+	TokenRequest         TokenRequest
+	LoginResult          *LoginResult
 }
 
 // LoginOpt allows for customizing the login experience.
@@ -55,6 +62,45 @@ func WithQueryParam(k, v string) LoginOpt {
 func WithSilentAuthentication() LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.SilentAuthentication = true
+	}
+}
+
+// TokenRequest is used to authenticate to the IdentityProvider using the
+// Resource Owner Password Credentials (ROPC) flow.
+type TokenRequest struct {
+	Username string `json:"username,omitempty"`
+	Password string `json:"password,omitempty"`
+}
+
+// LoginResult is the response from the IdentityProvider after a login attempt.
+type LoginResult struct {
+	TokenResult
+	Error error
+}
+
+// TokenResult is the response from the IdentityProvider after a login attempt.
+type TokenResult struct {
+	// AccessToken is the token that can be used to access protected resources.
+	AccessToken string `json:"access_token,omitempty"`
+	// IDToken is the token that contains user identity information.
+	IDToken string `json:"id_token,omitempty"`
+	// RefreshToken is the token that can be used to refresh the access token.
+	RefreshToken string `json:"refresh_token,omitempty"`
+	// ExpiresIn is the number of seconds until the access token expires.
+	ExpiresIn int64 `json:"expires_in,omitempty"`
+	// Scope is the scope of the access token.
+	Scope string `json:"scope,omitempty"`
+}
+
+// WithROPC specifies the Resource Owner Password Credentials (ROPC) flow for
+// authenticating a user. This flow is typically used for legacy applications
+// that require a username and password to authenticate the user directly.
+// https://datatracker.ietf.org/doc/html/rfc6749#section-4.3
+func WithROPC(input TokenRequest, output *LoginResult) LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.GrantType = GrantTypeROPC
+		cfg.TokenRequest = input
+		cfg.LoginResult = output
 	}
 }
 
