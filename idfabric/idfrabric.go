@@ -25,7 +25,7 @@ type LoginOptions struct {
 	SilentAuthentication bool
 	QueryParams          url.Values
 	GrantType            int
-	TokenRequest         ROPCRequest
+	ROPCRequest          ROPCRequest
 	LoginResult          *LoginResult
 }
 
@@ -99,7 +99,7 @@ type TokenResult struct {
 func WithGrantTypeROPC(input ROPCRequest, output *LoginResult) LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.GrantType = GrantTypeROPC
-		cfg.TokenRequest = input
+		cfg.ROPCRequest = input
 		cfg.LoginResult = output
 	}
 }
