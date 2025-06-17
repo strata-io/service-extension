@@ -15,6 +15,7 @@ type IdentityProvider interface {
 	// Login provides a front-channel user login flow. The user will be redirected
 	// to the underlying IDP to authenticate the user.
 	Login(rw http.ResponseWriter, req *http.Request, opts ...LoginOpt)
+	IsAvailable() bool
 }
 
 // LoginOptions store the options used to customize the user experience when
