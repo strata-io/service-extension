@@ -38,6 +38,11 @@ func WithTTL(ttl time.Duration) Option {
 type Constraints struct {
 	// Name of the cache.
 	Name string
+
+	// RawNamespace indicates whether to use the namespace exactly as provided
+	// without applying the /servext prefix. This allows Service Extensions to
+	// access cache keys written by external systems.
+	RawNamespace bool
 }
 
 // Constraint allows for customizing the Cache.
@@ -47,5 +52,15 @@ type Constraint func(*Constraints)
 func WithName(name string) Constraint {
 	return func(do *Constraints) {
 		do.Name = name
+	}
+}
+
+// WithRawNamespace enables raw namespace mode, bypassing the /servext prefix.
+// Use this when accessing cache keys written by external systems that don't
+// follow Maverics namespace conventions.
+// FIXME: we may not want to do "`WithRawNamespace`" constraint here, instead we may just want an option which omits the `/servext` prefix.
+func WithRawNamespace() Constraint {
+	return func(do *Constraints) {
+		do.RawNamespace = true
 	}
 }
