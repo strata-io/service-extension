@@ -39,10 +39,8 @@ type Constraints struct {
 	// Name of the cache.
 	Name string
 
-	// RawNamespace indicates whether to use the namespace exactly as provided
-	// without applying the /servext prefix. This allows Service Extensions to
-	// access cache keys written by external systems.
-	RawNamespace bool
+	// NoNamespace indicates whether namespaces should be ignored.
+	NoNamespace bool
 }
 
 // Constraint allows for customizing the Cache.
@@ -55,12 +53,10 @@ func WithName(name string) Constraint {
 	}
 }
 
-// WithRawNamespace enables raw namespace mode, bypassing the /servext prefix.
-// Use this when accessing cache keys written by external systems that don't
-// follow Maverics namespace conventions.
-// FIXME: we may not want to do "`WithRawNamespace`" constraint here, instead we may just want an option which omits the `/servext` prefix.
-func WithRawNamespace() Constraint {
+// WithNoNamespace to indicate that the namespace will be ignored
+// and keys in get/set methods will be used as is.
+func WithNoNamespace() Constraint {
 	return func(do *Constraints) {
-		do.RawNamespace = true
+		do.NoNamespace = true
 	}
 }
