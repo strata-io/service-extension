@@ -28,6 +28,7 @@ type LoginOptions struct {
 	Username             string
 	RedirectURL          string
 	SilentAuthentication bool
+	ForceAuthentication  bool
 	QueryParams          url.Values
 	GrantType            int
 	ROPCRequest          ROPCRequest
@@ -67,6 +68,19 @@ func WithQueryParam(k, v string) LoginOpt {
 func WithSilentAuthentication() LoginOpt {
 	return func(cfg *LoginOptions) {
 		cfg.SilentAuthentication = true
+	}
+}
+
+// WithForceAuthentication specifies to the IDP that the user must be actively
+// re-authenticated as part of the login, even if they already have an existing
+// session with the IDP.
+//
+// In the context of SAML, this option results in ForceAuthn="true" being set on
+// the AuthnRequest. In the context of OIDC, it corresponds to the
+// 'prompt=login' query parameter.
+func WithForceAuthentication() LoginOpt {
+	return func(cfg *LoginOptions) {
+		cfg.ForceAuthentication = true
 	}
 }
 
