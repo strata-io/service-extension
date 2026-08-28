@@ -6,6 +6,7 @@ import (
 	"github.com/strata-io/service-extension/app"
 	"github.com/strata-io/service-extension/bundle"
 	"github.com/strata-io/service-extension/cache"
+	"github.com/strata-io/service-extension/fips"
 	"github.com/strata-io/service-extension/http"
 	"github.com/strata-io/service-extension/idfabric"
 	"github.com/strata-io/service-extension/log"
@@ -69,4 +70,10 @@ type Orchestrator interface {
 
 	// HTTP provides utilities for making HTTP requests.
 	HTTP() http.HTTP
+
+	// FIPS provides cryptographic operations that remain available when the
+	// Orchestrator runs in FIPS 140-3 approved mode. Approved mode withdraws
+	// the go-jose symbols from the service extension runtime, and this is the
+	// supported replacement for them.
+	FIPS() fips.Provider
 }

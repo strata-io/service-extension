@@ -5,6 +5,7 @@ go 1.25.7
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.32.12
 	github.com/aws/aws-sdk-go-v2/service/verifiedpermissions v1.32.0
+	github.com/google/uuid v1.6.0
 	github.com/strata-io/service-extension v0.0.0
 )
 

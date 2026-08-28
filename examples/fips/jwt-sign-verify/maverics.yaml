@@ -1,0 +1,79 @@
+version: fips-jwt-sign-verify
+
+tls:
+  maverics:
+    # TODO: replace the 'certFile' and 'keyFile' values with an absolute path to a
+    # certificate pair. For more info on the TLS configuration, please reference
+    # https://scriptum.strata.io/get-started/transport-security.
+    certFile: { ABSOLUTE PATH TO CERT FILE }
+    keyFile: { ABSOLUTE PATH TO KEY FILE }
+
+http:
+  address: ":443"
+  tls: maverics
+
+logger:
+  level: debug
+
+apps:
+  - name: exampleFIPSJWTSignVerify
+    type: proxy
+    routePatterns:
+      - /
+    # The 'upstream' used here is purely for demonstration and can be replaced with
+    # any URL that is resolvable from the machine the Orchestrator is running on.
+    upstream: https://cylog.org
+    headers:
+      - name: AUTHORIZATION
+        value: "Bearer {{ se.upstreamToken }}"
+
+    loadAttrsSE:
+      # It is assumed the jwt.go Service Extension file resides in the
+      # '/etc/maverics/extensions' directory. To change that, update the 'file' field below.
+      funcName: MintToken
+      file: /etc/maverics/extensions/jwt.go
+      metadata:
+        issuer: "https://orchestrator.examples.com"
+        audience: "https://api.examples.com"
+
+    policies:
+      - location: ~ \.(jpg|png|ico|svg|ttf|js|css|gif)$
+        authentication:
+          allowUnauthenticated: true
+        authorization:
+          allowAll: true
+      - location: /
+        authentication:
+          idps:
+            - azure
+        authorization:
+          allowAll: true
+
+  # A second app showing the verification half. Requests arrive already carrying
+  # a bearer token, so the Service Extension makes the authorization decision
+  # rather than the Orchestrator redirecting for a login.
+  - name: exampleFIPSJWTVerify
+    type: proxy
+    routePatterns:
+      - /api
+    upstream: https://cylog.org
+
+    policies:
+      - location: /
+        authentication:
+          allowUnauthenticated: true
+        authorization:
+          isAuthorizedSE:
+            funcName: ValidateToken
+            file: /etc/maverics/extensions/jwt.go
+            metadata:
+              issuer: "https://orchestrator.examples.com"
+
+connectors:
+  - name: azure
+    type: azure
+    authType: saml
+    # TODO: Configure the SAML Azure IDP.
+    samlMetadataURL: { SAML METADATA URL }
+    samlConsumerServiceURL: { SAML CONSUMER SERVICE URL }
+    samlEntityID: { SAML ENTITY ID }

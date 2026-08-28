@@ -1,0 +1,82 @@
+version: fips-ldap-search-loadAttrs
+
+tls:
+  maverics:
+    # TODO: replace the 'certFile' and 'keyFile' values with an absolute path to a
+    # certificate pair. For more info on the TLS configuration, please reference
+    # https://scriptum.strata.io/get-started/transport-security.
+    certFile: { ABSOLUTE PATH TO CERT FILE }
+    keyFile: { ABSOLUTE PATH TO KEY FILE }
+  ldap:
+    # TODO: replace 'caFile' with an absolute path to the CA that issued the LDAP
+    # server certificate. The connector, not the Service Extension, is what
+    # establishes and secures this connection.
+    caFile: { ABSOLUTE PATH TO LDAP CA FILE }
+
+http:
+  address: ":443"
+  tls: maverics
+
+logger:
+  level: debug
+
+apps:
+  - name: exampleFIPSLDAPSearchLoadAttrs
+    type: proxy
+    routePatterns:
+      - /
+    # The 'upstream' used here is purely for demonstration and can be replaced with
+    # any URL that is resolvable from the machine the Orchestrator is running on.
+    upstream: https://cylog.org
+    headers:
+      - name: EXAMPLE-GROUPS
+        value: "{{ se.groups }}"
+
+    loadAttrsSE:
+      # It is assumed the loadAttrs.go Service Extension file resides in the
+      # '/etc/maverics/extensions' directory. To change that, update the 'file' field below.
+      funcName: LoadAttrs
+      file: /etc/maverics/extensions/loadAttrs.go
+      metadata:
+        # Must match the name of the LDAP connector below. The Service Extension
+        # resolves the provider by this name.
+        attributeProviderName: "ldapAttrs"
+        groupAttribute: "memberOf"
+
+    policies:
+      - location: ~ \.(jpg|png|ico|svg|ttf|js|css|gif)$
+        authentication:
+          allowUnauthenticated: true
+        authorization:
+          allowAll: true
+      - location: /
+        authentication:
+          idps:
+            - azure
+        authorization:
+          allowAll: true
+
+connectors:
+  # The 'name' property is used as a unique ID that the Service Extensions depend on.
+  # Please ensure the Service Extensions are updated if the name of the connectors change.
+  - name: azure
+    type: azure
+    authType: saml
+    # TODO: Configure the SAML Azure IDP.
+    samlMetadataURL: { SAML METADATA URL }
+    samlConsumerServiceURL: { SAML CONSUMER SERVICE URL }
+    samlEntityID: { SAML ENTITY ID }
+
+  # The LDAP attribute provider replaces the direct go-ldap usage in the
+  # non-FIPS ldap-search example. Everything the Service Extension used to do by
+  # hand -- dial, StartTLS, bind -- is configuration here.
+  - name: ldapAttrs
+    type: ldap
+    url:
+      - "ldaps://ldap.examples.com:636"
+    serviceAccountUsername: <secrets.serviceAccountUsername>
+    serviceAccountPassword: <secrets.serviceAccountPassword>
+    baseDN: "dc=examples,dc=com"
+    usernameSearchKey: "mail"
+    attributeDelimiter: ","
+    tls: ldap
